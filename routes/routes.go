@@ -12,4 +12,7 @@ func Setup(app *fiber.App) {
 
 	// Auth routes
 	AuthRoutes(api.Group("/auth"))
+
+	// Appointment routes
+	AppointmentRoutes(api.Group("/appointments"))
 }
