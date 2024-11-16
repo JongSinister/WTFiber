@@ -9,4 +9,7 @@ func Setup(app *fiber.App) {
 
 	// Hotel routes
 	HotelRoutes(api.Group("/hotels"))
+
+	// Auth routes
+	AuthRoutes(api.Group("/auth"))
 }
