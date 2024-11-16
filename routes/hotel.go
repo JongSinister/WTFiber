@@ -6,9 +6,9 @@ import (
 )
 
 func HotelRoutes(router fiber.Router) {
-	router.Get("/", controllers.GetHotels) // Relative to the base path "/api/v1/hotels"
-	// router.Get("/:id", controllers.GetHotel)
-	// router.Post("/", controllers.CreateHotel)
-	// router.Put("/:id", controllers.UpdateHotel)
-	// router.Delete("/:id", controllers.DeleteHotel)
+	router.Get("/", controllers.GetHotels)
+	router.Get("/:id", controllers.GetHotel)
+	router.Post("/", controllers.CreateHotel)
+	router.Put("/:id", controllers.UpdateHotel)
+	router.Delete("/:id", controllers.DeleteHotel)
 }
