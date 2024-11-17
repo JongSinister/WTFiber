@@ -12,5 +12,5 @@ type Appointment struct {
 	User         primitive.ObjectID `bson:"user" validate:"required"`
 	Hotel        primitive.ObjectID `bson:"hotel" validate:"required"`
 	WifiPassword string             `bson:"wifiPassword,omitempty"`
-	CreatedAt    time.Time          `bson:"createdAt,omitempty"`
+	CreatedAt    primitive.DateTime `bson:"createdAt,omitempty"`
 }

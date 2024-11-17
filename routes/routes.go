@@ -15,4 +15,5 @@ func Setup(app *fiber.App) {
 
 	// Appointment routes
 	AppointmentRoutes(api.Group("/appointments"))
+
 }

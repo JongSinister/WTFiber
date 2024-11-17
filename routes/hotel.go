@@ -11,4 +11,8 @@ func HotelRoutes(router fiber.Router) {
 	router.Post("/", controllers.CreateHotel)
 	router.Put("/:id", controllers.UpdateHotel)
 	router.Delete("/:id", controllers.DeleteHotel)
+
+	// Create a appointment for a hotel
+	router.Post("/:hotelId/appointments", controllers.AddAppointment)
+
 }
