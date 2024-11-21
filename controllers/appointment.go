@@ -115,6 +115,75 @@ func AddAppointment(c *fiber.Ctx) error {
 	)
 }
 
+// @desc Update appointment
+// @route PUT /api/v1/appointments/:id
+// @access Private
+func UpdateAppointment(c *fiber.Ctx) error {
+	// 1) Get the ID from the URL and convert it to an ObjectID
+	apptId := c.Params("id")
+
+	objectID, err := primitive.ObjectIDFromHex(apptId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid ID Format"})
+	}
+
+	// 2) fetch existing appointment from database
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	existAppointment := new(models.Appointment)
+	err = config.DB.Collection(appointmentCollection).FindOne(ctx, bson.M{"_id": objectID}).Decode(existAppointment)
+
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Appointment not found"})
+	}
+
+	// 3) Parse the request body into a map for partial updates
+	update := make(map[string]interface{})
+	if err := c.BodyParser(&update); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request format"})
+	}
+
+	// 4) Prepare the update document
+	updateDoc := bson.M{
+		"$set": update,
+	}
+
+	// 5) Update the appointment document with specified fields
+	_, err = config.DB.Collection(appointmentCollection).UpdateOne(ctx, bson.M{"_id": objectID}, updateDoc)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update appointment"})
+	}
+
+	// 6) Return the response
+	return c.JSON(fiber.Map{"message": "Appointment updated successfully"})
+}
+
+// @desc Delete appointment
+// @route DELETE /api/v1/appointments/:id
+// @access Private
+func DeleteAppointment(c *fiber.Ctx) error {
+	// 1) Get the ID from the URL and convert it to an ObjectID
+	apptId := c.Params("id")
+
+	objectID, err := primitive.ObjectIDFromHex(apptId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid ID Format"})
+	}
+
+	// 2) Delete the appointment from database
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	_, err = config.DB.Collection(appointmentCollection).DeleteOne(ctx, bson.M{"_id": objectID})
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete appointment"})
+	}
+
+	// 3) Return the response
+	return c.JSON(fiber.Map{"message": "Appointment deleted successfully"})
+}
+
 // Create Random Wifi Password
 func generateRandomPassword() string {
 	// Random length from 6 to 8
